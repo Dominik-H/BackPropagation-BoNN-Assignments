@@ -1,0 +1,19 @@
+﻿
+@{
+    ViewBag.Title = "CheckData";
+}
+
+<h2>CheckData</h2>
+<p>Num Items: @ViewBag.NumItems</p>
+@for(int i = 0; i < ViewBag.NumItems; ++i)
+{
+    @:<p>Item @i: @ViewData["Item " + i]</p>
+}
+<p>Train Percent: @ViewBag.trPerc</p>
+<p>Test Percent: @ViewBag.tsPerc</p>
+<p>Gamma: @ViewBag.gamma</p>
+<p>Epsilon: @ViewBag.epsilon</p>
+<br />
+<p>NumTrain: @ViewBag.NumTrain</p>
+<p>NumTest: @ViewBag.NumTest</p>
+

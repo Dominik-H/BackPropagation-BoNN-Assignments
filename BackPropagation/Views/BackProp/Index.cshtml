@@ -1,0 +1,109 @@
+﻿@model BackPropagation.Models.InputDataModels
+
+@{
+    ViewBag.Title = "Home Page";
+}
+
+<h3></h3>
+
+@using (Html.BeginForm("Index", "BackProp", FormMethod.Post, new { enctype = "multipart/form-data" }))
+{
+    @Html.AntiForgeryToken()
+    <div class="form-horizontal">
+        <h4>Please Input information for BackPropagation algorithm!</h4>
+        <hr />
+        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+
+        <h3>Data &amp; info:</h3>
+        <div class="form-group">
+            <label class="control-label col-md-2" for="file">Upload Data:</label>
+            <div class="col-md-10">
+                <input class="form-control" type="file" name="file" id="file" />
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label class="control-label col-md-2" for="name">Set name</label>
+            <div class="col-md-10">
+                <input class="form-control" type="text" id="name" name="name" value="" /><br />
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.trainPercent, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.trainPercent, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.trainPercent, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <h3>Topology:</h3>
+        <div class="form-group">
+            <div class="col-md-offset-2 col-md-10">
+                <button class="btn btn-default" id='btnAddField'>Add Hidden Layer</button>
+                <button class="btn btn-default" id='btnRmvField'>Remove Hidden Layer</button>
+            </div>
+        </div>
+
+        @Html.HiddenFor(model => model.numHidden, new { id = "numHidden" })
+
+        <div id="fields"></div>
+
+        <h3>Learning parameters:</h3>
+        <div class="form-group">
+            @Html.LabelFor(model => model.gamma, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.gamma, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.gamma, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.epsilon, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.epsilon, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.epsilon, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            <div class="col-md-offset-2 col-md-10">
+                <input class="btn btn-default" type="submit" value="Submit" />
+            </div>
+        </div>
+
+    </div>
+}
+
+@{
+    string error = ViewBag.Error as string;
+    if (error != null)
+    {
+        <h2>@error</h2>
+    }
+}
+
+
+@section Scripts {
+    <script type="text/javascript">
+        $(document).ready(function () {
+            var $fields = $('#fields');
+            var count = 0;
+            $('#btnAddField').click(function (e) {
+                e.preventDefault();
+                if(count < 5) {
+                    count++;
+                    $('input[id="numHidden"]').val(count);
+                    $('<div class="form-group"><label class="control-label col-md-2" for="field">Hidden Layer #' + count + ':</label><div class="col-md-10"><input class="form-control" type="text" name="dynamicField" /><br/></div></div>').appendTo($fields);
+                }   
+            });
+            $('#btnRmvField').click(function (e) {
+                e.preventDefault();
+                if (count > 0) {
+                    $(fields).find('div:contains(Hidden Layer #' + count + ')').remove();
+                    count--;
+                }
+            });
+        });
+    </script>
+}
