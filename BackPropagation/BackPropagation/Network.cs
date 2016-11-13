@@ -12,6 +12,8 @@ namespace BackPropagation.BackPropagation
         private List<List<Neuron>> _hiddenLayers;
         private List<Neuron> _outputLayer;
         private bool run = false;
+        private double errorTest;
+        private double errorTrain;
 
         public Network(Topology top, bool randomWeights)
         {
@@ -192,6 +194,7 @@ namespace BackPropagation.BackPropagation
             }
 
             error /= _testSet.GetNumData();
+            errorTest = error;
             Console.WriteLine("Perc Err Test: " + error);
 
             return error;
@@ -333,6 +336,7 @@ namespace BackPropagation.BackPropagation
                 }
 
                 error /= _trainSet.GetNumData();
+                errorTrain = error;
                 Console.WriteLine("Perc Err Train: " + error);          
             }
         }
@@ -395,6 +399,50 @@ namespace BackPropagation.BackPropagation
 
             
             //Console.Read();
+        }
+
+        public double GetErrorOnTest()
+        {
+            return errorTest;
+        }
+
+        public double GetErrorOnTrain()
+        {
+            return errorTrain;
+        }
+
+        public List<List<List<double>>> GetWeights()
+        {
+            List<List<List<double>>> o = new List<List<List<double>>>();
+            for(int i = 0; i < _hiddenLayers.Count; ++i)
+            {
+                List<List<double>> l = new List<List<double>>();
+                for(int j = 0; j < _hiddenLayers[i].Count; ++j)
+                {
+                    List<Pair<Neuron, double>> pre = _hiddenLayers[i][j].GetPreSynapses();
+                    List<double> w = new List<double>();
+                    for (int k = 0; k < pre.Count; ++k) {
+                        w.Add(pre[k].Item2);
+                    }
+                    l.Add(w);
+                }
+                o.Add(l);
+            }
+
+            List<List<double>> la = new List<List<double>>();
+            for (int j = 0; j < _outputLayer.Count; ++j)
+            {
+                List<Pair<Neuron, double>> pre = _outputLayer[j].GetPreSynapses();
+                List<double> w = new List<double>();
+                for (int k = 0; k < pre.Count; ++k)
+                {
+                    w.Add(pre[k].Item2);
+                }
+                la.Add(w);
+            }
+            o.Add(la);
+
+            return o;
         }
     }
 }

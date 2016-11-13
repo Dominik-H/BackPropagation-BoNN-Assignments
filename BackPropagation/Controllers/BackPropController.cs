@@ -3,6 +3,7 @@ using System.Web;
 using System.Web.Mvc;
 using BackPropagation.BackPropagation;
 using System;
+using System.Collections.Generic;
 
 namespace BackPropagation.Controllers
 {
@@ -121,6 +122,8 @@ namespace BackPropagation.Controllers
             processedData.momentum = ((Models.InputDataModels)TempData["form"]).momentum;
             ViewBag.trPerc = ((Models.InputDataModels)TempData["form"]).trainPercent;
             ViewBag.tsPerc = 100 - (int)((Models.InputDataModels)TempData["form"]).trainPercent;
+            ViewBag.NumIter = ((Models.InputDataModels)TempData["form"]).numIter;
+            processedData.maxIter = ((Models.InputDataModels)TempData["form"]).numIter;
 
             ViewBag.numTrain = trainData.GetNumData();
             ViewBag.numTest = testData.GetNumData();
@@ -138,19 +141,25 @@ namespace BackPropagation.Controllers
         [HttpPost]
         public ActionResult Train()
         {
+            List<List<List<double>>> weights = null;
             if(TempData["data"] != null)
             {
                 var data = (Models.ProcessedDataModels)TempData["data"];
                 Network net = data.NeuralNet;
-                net.Train(data.gamma, data.momentum, data.epsilon);
+                net.Train(data.gamma, data.momentum, data.epsilon, data.maxIter);
 
                 // Get Results...
+                weights = net.GetWeights();
+                var errTest = net.GetErrorOnTest();
+                var errTrain = net.GetErrorOnTrain();
+                ViewBag.errTest = errTest;
+                ViewBag.errTrain = errTrain;
             } else
             {
                 ViewBag.Error = "There was an Error!";
             }
 
-            return View();
+            return View(weights);
         }
     }
 }

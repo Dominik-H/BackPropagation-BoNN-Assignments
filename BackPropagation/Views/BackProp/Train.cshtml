@@ -1,11 +1,39 @@
-﻿
+﻿@model List<List<List<double>>>
+
 @{
     ViewBag.Title = "Train";
 }
 
-<h2>Train</h2>
+<h2>Results</h2>
+<p><strong>End Error on Test Set: </strong>@ViewBag.errTest</p>
+<p><strong>End Error on Train Set: </strong>@ViewBag.errTrain</p>
+
+<h5>Weights at the end</h5>
+<p><strong>Layers are shown in order (First Hidden, Second Hidden, ..., Output). The weights are shown in table where each row belongs to different neuron on the layer and each field in a row is resulting weight comming into the neuron on that layer.</strong></p>
 
 <!-- Display Results -->
+@if (Model != null)
+{
+    for (int i = 0; i < Model.Count; ++i) // each Synapse Layer
+    {
+        <table>
+            <tr><th colspan="@Model[i].Count">Layer @i</th></tr>
+            @for (int j = 0; j < Model[i].Count; ++j)
+            {
+                <tr>
+                    @for (int k = 0; k < Model[i][j].Count; ++k)
+                    {
+                        <th>W @k coming into neuron @j</th>
+                        <td>
+                            @Model[i][j][k]
+                        </td>
+                    }
+                </tr>
+            }
+
+        </table>
+    }
+}
 
 @{
     string error = ViewBag.Error as string;

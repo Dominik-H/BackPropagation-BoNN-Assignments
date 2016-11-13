@@ -31,5 +31,9 @@ namespace BackPropagation.Models
         [Range(0d, 1d)]
         [Display(Name = "Momentum")]
         public double momentum { get; set; }
+        [Required]
+        [Range(0, 20000)]
+        [Display(Name = "Max number of iterations")]        
+        public int numIter { get; set; }
     }
 }
