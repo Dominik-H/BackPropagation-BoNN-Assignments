@@ -199,6 +199,7 @@
     <Compile Include="BackPropagation\Loader.cs" />
     <Compile Include="BackPropagation\Network.cs" />
     <Compile Include="BackPropagation\Neuron.cs" />
+    <Compile Include="BackPropagation\Pair.cs" />
     <Compile Include="BackPropagation\Topology.cs" />
     <Compile Include="Controllers\AccountController.cs" />
     <Compile Include="Controllers\BackPropController.cs" />
@@ -276,6 +277,7 @@
     <Content Include="Views\Shared\Lockout.cshtml" />
     <Content Include="Views\Shared\_LoginPartial.cshtml" />
     <Content Include="Views\BackProp\CheckData.cshtml" />
+    <Content Include="Views\BackProp\Train.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

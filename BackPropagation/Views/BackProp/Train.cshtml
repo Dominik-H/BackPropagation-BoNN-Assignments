@@ -1,0 +1,16 @@
+﻿
+@{
+    ViewBag.Title = "Train";
+}
+
+<h2>Train</h2>
+
+<!-- Display Results -->
+
+@{
+    string error = ViewBag.Error as string;
+    if (error != null)
+    {
+        <h2>@error</h2>
+    }
+}

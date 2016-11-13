@@ -13,12 +13,14 @@ namespace BackPropagation.BackPropagation
         private int _trainPerc;
         private int _testPerc;
         private Data _allData;
+        private bool _norm;
 
-        public Loader(string path, int trainPercent)
+        public Loader(string path, int trainPercent, bool normalize)
         {
             _path = path;
             _trainPerc = trainPercent;
             _testPerc = 100 - trainPercent;
+            _norm = normalize;
             Init();
         }
 
@@ -49,10 +51,10 @@ namespace BackPropagation.BackPropagation
                     } else
                     {
                         ln.AddItem(val);
-                    }
+                    }                    
                 }
 
-                if(!isNum)
+                if (!isNum)
                 {
                     continue;
                 }
@@ -60,6 +62,10 @@ namespace BackPropagation.BackPropagation
                 _allData.AddLine(ln);
             }
 
+            if(_norm)
+            {
+                _allData.Normalize();
+            }
             _allData.Shuffle();
         }
 

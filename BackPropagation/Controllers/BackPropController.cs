@@ -86,23 +86,24 @@ namespace BackPropagation.Controllers
             string path = TempData["FilePath"] as string;
             int trainPercent = ((Models.InputDataModels)TempData["form"]).trainPercent;
 
-            Loader loader = new Loader(path, trainPercent);
-            processedData.TrainData = loader.GenerateTrainSet();
-            processedData.TestData = loader.GenerateTestSet();
+            Loader loader = new Loader(path, trainPercent, ((Models.InputDataModels)TempData["form"]).normData);
+            Data trainData = loader.GenerateTrainSet();
+            Data testData = loader.GenerateTestSet();
 
             Topology top = new Topology();
-            top.SetInputs(processedData.TrainData.GetNumFeatures());
-            int numClasses = processedData.TrainData.GetNumClasses();
-            if(numClasses < 2)
-            {
-                throw new InvalidDataException();
-            } else if (numClasses == 2)
-            {
-                top.SetOutputs(1);
-            } else
-            {
-                top.SetOutputs(numClasses);
-            }
+            top.SetInputs(trainData.GetNumFeatures());
+            int numClasses = trainData.GetNumClasses();
+            testData.GetNumClasses();
+            //if(numClasses < 2)
+            //{
+            //    throw new InvalidDataException();
+            //} else if (numClasses == 2)
+            //{
+            top.SetOutputs(1);
+            //} else
+            //{
+            //    top.SetOutputs(numClasses);
+            //}
 
             int end = ((Models.InputDataModels)TempData["form"]).numHidden;
             ViewBag.NumItems = end;
@@ -116,13 +117,38 @@ namespace BackPropagation.Controllers
             processedData.gamma = ((Models.InputDataModels)TempData["form"]).gamma;
             ViewBag.epsilon = ((Models.InputDataModels)TempData["form"]).epsilon;
             processedData.epsilon = ((Models.InputDataModels)TempData["form"]).epsilon;
+            ViewBag.momentum = ((Models.InputDataModels)TempData["form"]).momentum;
+            processedData.momentum = ((Models.InputDataModels)TempData["form"]).momentum;
             ViewBag.trPerc = ((Models.InputDataModels)TempData["form"]).trainPercent;
             ViewBag.tsPerc = 100 - (int)((Models.InputDataModels)TempData["form"]).trainPercent;
 
-            ViewBag.numTrain = processedData.TrainData.GetNumData();
-            ViewBag.numTest = processedData.TestData.GetNumData();
+            ViewBag.numTrain = trainData.GetNumData();
+            ViewBag.numTest = testData.GetNumData();
+
+            Network net = new Network(top, true);
+            net.SetTrain(trainData);
+            net.SetTest(testData);
+            processedData.NeuralNet = net;
 
             TempData["data"] = processedData;
+
+            return View();
+        }
+
+        [HttpPost]
+        public ActionResult Train()
+        {
+            if(TempData["data"] != null)
+            {
+                var data = (Models.ProcessedDataModels)TempData["data"];
+                Network net = data.NeuralNet;
+                net.Train(data.gamma, data.momentum, data.epsilon);
+
+                // Get Results...
+            } else
+            {
+                ViewBag.Error = "There was an Error!";
+            }
 
             return View();
         }

@@ -13,7 +13,19 @@
 <p>Test Percent: @ViewBag.tsPerc</p>
 <p>Gamma: @ViewBag.gamma</p>
 <p>Epsilon: @ViewBag.epsilon</p>
+<p>Momentum: @ViewBag.momentum</p>
 <br />
 <p>NumTrain: @ViewBag.NumTrain</p>
 <p>NumTest: @ViewBag.NumTest</p>
 
+@using (Html.BeginForm("Train", "BackProp", FormMethod.Post))
+{
+    <div class="form-horizontal">
+        <div class="form-group">
+            <div class="col-md-offset-2 col-md-10">
+                <input class="btn btn-default" type="submit" value="TRAIN!" />
+            </div>
+        </div>
+
+    </div>
+}

@@ -13,6 +13,9 @@ namespace BackPropagation.Models
         //[Display(Name = "Peecentage of Test Data")]
         //public int testPercent { get; set; }
         [Required]
+        [Display(Name = "Normalize Data")]
+        public bool normData { get; set; }
+        [Required]
         [Range(1, 5)]
         [Display(Name = "Number of Hidden Layers")]
         public int numHidden { get; set; }
@@ -24,5 +27,9 @@ namespace BackPropagation.Models
         [Range(0d, 1d)]
         [Display(Name = "Maximum Error")]
         public double epsilon { get; set; }
+        [Required]
+        [Range(0d, 1d)]
+        [Display(Name = "Momentum")]
+        public double momentum { get; set; }
     }
 }
