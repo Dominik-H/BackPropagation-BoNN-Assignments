@@ -1,6 +1,82 @@
 ﻿@{
     ViewBag.Title = "Documentation";
 }
-<h2>@ViewBag.Title.</h2>
+<h1>@ViewBag.Title.</h1>
 
-<p>Use this area to provide additional information.</p>
+<h2>Assignment</h2>
+<p>Trénovacie dáta obsahujú dva podaresáre: banana a spiral. V oboch je niekoľko trénovacích množín, ktoré sú doplnené aj grafmi dát. Tieto dáta skúžia na testovanie správnosti vašej implementácie. Požaduje sa, aby ste svoju aplikáciu natrénovali a v dokumentácií popísali min. na dátach banana_1, aspoň na jednej ľubovoľnej množine z adresáru spiral a na jednej množine označenej ako data_x.csv.</p>
+
+<p>Zadanie: Naprogramovať metódu spätného šírenia chyby. Program experimentálne porovnať na klasifikačných dátach poskytnutých cvičiacim. Vypracovať dokumentáciu k rpogramu. Program musí komunikovať s užívateľom prostredníctvom webového grafického rozhrania (minimálne výpis textový výpis výsledkov). Program bude nasadený na virtuálnom serveri v prostredí Microsoft Azure. </p>
+
+<h2>Steps I took</h2>
+<p>In the begining I looked at the datasets, so I would get to know what am I up against. Then I created layout of this page in MS ASP.Net MVC, created basic layout of classes used (Details below).</p>
+<p>Uppon realisation that the debugging will not be very smooth in the MVC app I moved my BackPropagation code to new Console Application. My first thought was to design topology of NN in a way that when we have 2 classes I will have 1 output neuron returning 0 or 1 depending on the class and when we have 3 or more classes I will have 3 or more number of output neurons each returning 0 or 1 depending on resulting class. In case of class 1 the first would be 1 and the rest 0 and so on. Hovewer this approach lead me to big errors (maybe I had mistake in the code that calculated the error, who knows) after consultation with our teacher I was corrected that this is wrong approach and that I should always have just one output neuron. After that I have rewritten the code slightly to accomodate for this fact. Result was that it started to work for some of the datasets. But, because of closing deadline there was no time to find out why it does not work for complicated data like spiral (more in Results below).</p>
+<p>After checking that it is working for some datasets I moved the code to MVC and wrote page showing results.</p>
+
+<h2>Classes and Methods</h2>
+<h3>Class Loader</h3>
+<p>This class loads the data from file placed in path provided in class constructor. And gives us option to return Train and Test sets from all the data.</p>
+<h4>Constructor</h4>
+<p>Initializes the Loader and calls the private Init method where the loading is actualy done. After data are loaded the Shiffle method is called.</p>
+<h4>GenerateTrainSet()</h4>
+<p>Calls method GenerateTrainSet() in class Data and returns the set.</p>
+<h4>GenerateTestSet()</h4>
+<p>The same as above with Test data.</p>
+
+<h3>Class Data</h3>
+<p>Contains list of Lines, where Line is special class defined inside this class that contains list of features and class.</p>
+<h4>Shuffle()</h4>
+<p>Shuffles the data.</p>
+<h4>Normalize()</h4>
+<p>Normalizes the data to interval [-1 1]</p>
+<h4>GetLine(int i)</h4>
+<p>Returns Line at index i</p>
+<h4>GetNumClasses()</h4>
+<p>Returns Num Classes. Also this method normalizes the classes to interval [0 1] so should be called on each set. This was added after the mentioned rewriting to accomodate for 1 output neuron and should have it's own method.</p>
+
+<h3>Class Pair</h3>
+<p>Helper class in place of .NET class Tupple whose items are immutable, so this class adds mutability.</p>
+
+<h3>Class Topology</h3>
+<p>Simple Class holding numbers of neurons in NN. Num Input neurons. Num Output Neurons. List of counts on hidden layers.</p>
+
+<h3>Class Neuron</h3>
+<p>This Class represents the main bulding block of NN, Neuron.</p>
+<h4>Constructors</h4>
+<p>It has 2 constructors. Default is for Input Neuron and parametric is for other neurons.</p>
+<h4>AddPostSynapse(Neuron n)</h4>
+<p>Adds neuron to list of references of neurons that are in topology after this neuron. This should be called in construction phase.</p>
+<h4>SetValue(double v)</h4>
+<p>Sets Value of Neuron. Made for Input Neurons.</p>
+<h4>Count()</h4>
+<p>Counts output of NN. Should be called only on output neuron. Calls private function OUT(). That calls private function Act() - Activation Function. That Calls private function IN(), which counts input to this neuron recurently from input layer and stores the value in _in variable. This variable is used in DerAct() function that computes derivate of activation function.</p>
+<h4>ChangeDeltas(double err, Neuron from)</h4>
+<p>Recurently changes deltas. If it is output neuron only multiply error by derAct and calls ChangeDeltas on all neurons in previous layer with error being delta multiplied by correct weigth, from neuron is current neuron. If it is any other neuron it first checks if all neurons on the right side already called this function and sums all the incoming deltas. If all the deltas are summed then the delta is multiplied by derAct value and again all previous neurons are counted.</p>
+<h4>ChangeWeights(double gamma, double momentum)</h4>
+<p>This method is called on all neurons except for input layer. All this does is it takes delta multiplies it by gamma and adds previous change multiplied by momentum, this is added to current weight and the change is stored for next iteration. The same is done for biasWeight.</p>
+<h4>ResetValue()</h4>
+<p>Resets value, delta, derAct, _in values in this neuron. Is called after each line is processed. It prepares neurons for next Count, CountDeltas and other operations.</p>
+
+<h3>Class Network</h3>
+<p>Stores the Neurons in each layer. Trains NN on train dataset and counts error on test dataset. Returns results.</p>
+<h4>Constructor</h4>
+<p>Creates all the neurons based on the Topology passed as an argument.</p>
+<h4>CountErrorOnTest()</h4>
+<p>Computes output on all the lines in test dataset and counts all that are classified wrong. Then it divides this count by amount of lines in dataset and returns this value. The value represents percents of wrongly classified lines divided by 100.</p>
+<h4>Train(double gamma, double momentum, double epsilon, double maxIter)</h4>
+<p>Trains NN until Error on Test is smaller than epsilon or maxIter is reached. The steps are the same as in Computing the Error on Test dataset except it is done on train dataset and after each line the deltas are computed and weights are changed.</p>
+
+<h2>Results</h2>
+<p>Because of shor time I was not able to achieve small errors on all datasets. Hovewer on some I have got some really good results.</p>
+<h3>data_4.csv</h3>
+<p>Gamma: 0.4 Momentum: 0.6 Epsilon: 0.05 Num. of Hidden Layers: 2 Hid. Layer 1: 8 Hid. Layer 2: 6 Normalized data Train Set: 80%</p>
+<p>Resulting error depending on generated starting weights: anywhere from 0% to 4%</p>
+<h3>banana.csv</h3>
+<p>Gamma: 0.3 Momentum: 0.6 Epsilon: 0.1 Num. of Hidden Layers: 2 Hid. Layer 1: 8 Hid. Layer 2: 6 Normalized data Train Set: 70%</p>
+<p>Resulting error depending on generated starting weights: anywhere from 4% to 9% In some cases 30%, hovewer it was declining it would just take longer than I was willing to wait.</p>
+<h3>spiral_1.csv</h3>
+<p>Gamma: 0.4 Momentum: 0.6 Epsilon: 0.05 Num. of Hidden Layers: 2 Hid. Layer 1: 16 Hid. Layer 2: 8 Normalized data Train Set: 80%</p>
+<p>Resulting error depending on generated starting weights: anywhere from 80% to 87% Spirals are tough. I was not able to achieve better results on any of the provided spiral datasets. This one was the best I could get. Once I even tried it with 60 neurons on first hidden layer and 15 on second without any luck. If I remember correctly, after 3 and half hours it went somewhere around 67% but was stuck at that point for long period of time, not sure for how long as this test was running while I was sleeping.</p>
+
+<h2>Conclusion</h2>
+<p>This assignment was quite cool, hovewer it would take much longer to find all the little details that needs to be adjusted to make it perform with better results. My guess is that the problem might be somewhere in my CountDeltas() method, who knows, there is no time to check that out so I have to be happy with results I have got. I might look into it later in this semester, but right now there is no time for that.</p>
