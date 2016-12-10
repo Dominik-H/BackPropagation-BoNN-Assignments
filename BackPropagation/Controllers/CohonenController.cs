@@ -121,12 +121,31 @@ namespace BackPropagation.Controllers
                     g.DrawLine(rPen, new Point((int)n.weightX, (int)n.weightY), new Point((int)rn.weightX, (int)rn.weightY));
                 }
 
-                var outPath = Path.Combine(Server.MapPath("~/App_Data/Cohonen"), "out.png");
+                var outPath = Path.GetDirectoryName(path);
+                outPath = Path.Combine(outPath, "out.png");
+                TempData["imgName"] = outPath;
+                ViewBag.bitmapData = outPath;
                 img.Save(outPath, ImageFormat.Png);
-                ViewBag.image = outPath;
             }
 
             return View();
+        }
+
+        public ActionResult Image(string path)
+        {
+            var bitmap = new Bitmap(path); // The method that returns Bitmap
+            var bitmapBytes = BitmapToBytes(bitmap); //Convert bitmap into a byte array
+            return File(bitmapBytes, "image/jpeg"); //Return as file result
+        }
+
+        // This method is for converting bitmap into a byte array
+        private static byte[] BitmapToBytes(Bitmap img)
+        {
+            using (MemoryStream stream = new MemoryStream())
+            {
+                img.Save(stream, System.Drawing.Imaging.ImageFormat.Png);
+                return stream.ToArray();
+            }
         }
     }
 }

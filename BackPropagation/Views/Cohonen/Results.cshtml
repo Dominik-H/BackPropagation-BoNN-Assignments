@@ -6,5 +6,5 @@
 <h2>Resulting Image</h2>
 
 <div>
-    <img src="@ViewBag.image" width="500" height="500" alt="Image" />
+    <img src='@Url.Action("Image", "Cohonen", new { path = ViewBag.bitmapData })' width="500" height="500" alt="" />
 </div>
