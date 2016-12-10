@@ -201,13 +201,19 @@
     <Compile Include="BackPropagation\Neuron.cs" />
     <Compile Include="BackPropagation\Pair.cs" />
     <Compile Include="BackPropagation\Topology.cs" />
+    <Compile Include="CohonenNet\BitmapLoader.cs" />
+    <Compile Include="CohonenNet\Network.cs" />
+    <Compile Include="CohonenNet\Neuron.cs" />
+    <Compile Include="CohonenNet\Pixels.cs" />
     <Compile Include="Controllers\AccountController.cs" />
     <Compile Include="Controllers\BackPropController.cs" />
+    <Compile Include="Controllers\CohonenController.cs" />
     <Compile Include="Controllers\ManageController.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
     <Compile Include="Models\AccountViewModels.cs" />
+    <Compile Include="Models\CohonenDataModels.cs" />
     <Compile Include="Models\IdentityModels.cs" />
     <Compile Include="Models\InputDataModels.cs" />
     <Compile Include="Models\ManageViewModels.cs" />
@@ -278,6 +284,9 @@
     <Content Include="Views\Shared\_LoginPartial.cshtml" />
     <Content Include="Views\BackProp\CheckData.cshtml" />
     <Content Include="Views\BackProp\Train.cshtml" />
+    <Content Include="Views\Cohonen\Index.cshtml" />
+    <Content Include="Views\Cohonen\Doc.cshtml" />
+    <Content Include="Views\Cohonen\Results.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
