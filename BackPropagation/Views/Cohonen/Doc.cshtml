@@ -1,7 +1,62 @@
 ﻿
 @{
-    ViewBag.Title = "Doc";
+    ViewBag.Title = "Documentation";
 }
 
-<h2>Doc</h2>
+<h1>@ViewBag.Title.</h1>
 
+<h2>Assignment</h2>
+<p>Naprogramovať doprednú neurónovú sieť Kohonenovho typu. Kohonenova vrstva je dvojrozmerná. Zrealizovať expertimenty na zadaných dátach a urobiť program na vizualizáciu Kohonenovej mapy počas učenia siete. Súčasťou zadania je aj dokumentácia k implementovanému programu. Program komunikuje s užívateľom prostredníctvom webového grafického rozhrania (minimálne výpis textový výpis výsledkov). Program bude nasadený na virtuálnom serveri v prostredí Microsoft Azure. Je možné rozšíriť zadanie č. 1 implementáciou tohto zadania. </p>
+
+<h2>Steps I took</h2>
+<p>First step was to understand how does Cohonen Newtork (or Self Organizing Map) work. After consultation with my classmate I realized that it is quite easy algorithm and proceeded to write the code.</p>
+<p>Debuging version was written as Console Application. I created required Classes (more bellow) and started testing. First problem was that the neurons did not move from their original position. Then I realized that I casted the weights to integer values which was the problem. After that everything worked quite fine so I moved the code to MVC application. Here I stumbled uppon another problem. I had trouble drawing resulting image to the web. Afters hours of consultations with Google I finaly made it work! Resulting demo can be seen on the "Cohonen" tab.</p>
+<p>Showing resulting image can still be a problem. If that happens the image is always stored in the App_Data/Cohonen folder!</p>
+
+<h2>Classes and Methods</h2>
+<h3>Class BitmapLoader</h3>
+<h4>Constructor</h4>
+<p>Takes Bitmap image and extracts only black pixels out from it and stores them in the Pixels data structure described bellow. Also finds middle of the picture for intial neurons position.</p>
+
+<h3>Class Network</h3>
+<h4>Constructor</h4>
+<p>Initializes Network. Creates array of neurons in their initial positions and performs calculation of time constant that is used for updating radius and gamma parameters.</p>
+<h4>GetNet</h4>
+<p>Returns all the neurons.</p>
+<h4>GetNeuron</h4>
+<p>Finds neuron positioned at coordinates x and y in the map (not in the picture). Helper class needed for drawing lines.</p>
+<h4>FindWinner</h4>
+<p>Calls CountDistance function of each Neuron and returns the one with the smallest distance from current pixel.</p>
+<h4>Update</h4>
+<p>Updates weights of neurons that are close to the winning neuron. (including the winning neuron)</p>
+<h4>Train</h4>
+<p>The main function of the class. Runs each pixel trough the network using FindWinner and Update functions. Also updates parameters radius and gamma after each iteration of all pixels.</p>
+
+<h3>Class Neuron</h3>
+<h4>Constructor</h4>
+<p>Initializes the neuron.</p>
+<h4>CountDistance</h4>
+<p>Computes Euclidean distance from the pixel passed as the argument.</p>
+<h4>UpdateTheta</h4>
+<p>Computes Theta parameter for the neuron. That is the impact parameter on weight of this neuron.</p>
+<h4>ChangeWeights</h4>
+<p>Simply changes weights of this neuron using the formula.</p>
+
+<h3>Class Pixel</h3>
+<p>Helper class that stores X and Y coordinate of a Pixel.</p>
+
+
+<h3>Class Pixels</h3>
+<p>Stores all the pixels in the list and has ability to shuffle them.</p>
+
+<h2>Results</h2>
+<p>The network works as it should. The resulting Map is stretched out over all the black spots in the pictures. It can be seen better if you try it.</p>
+<p>The parameters that worked for everything are:</p>
+<p>Gamma: 0.3</p>
+<p>Radius: 1.5</p>
+<p>Num Iterations: 100</p>
+<p>The dimensions of the network are dependent on the provided image.</p>
+
+<h2>Conclusion</h2>
+<p>This assignment was quite easy. I could make the real-time display of the Map as it slowly stretches out but given the complexity of threads in MVC applications it would cost me too much energy.</p>
+<p>Besides that, the program just works.</p>
